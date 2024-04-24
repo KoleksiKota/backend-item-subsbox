@@ -19,7 +19,7 @@ public abstract class Box implements Component {
     protected URL picture;
     @Setter(AccessLevel.NONE)
     protected ArrayList<Item> items;
-    @Getter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     protected Integer price;
 
     public abstract String getName();

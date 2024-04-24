@@ -25,7 +25,7 @@ public class MonthlyBox extends Box {
 
         double finalPrice = totalPrice * 1.05;
         int roundedFinalPrice = (int) Math.floor(finalPrice);
-        this.setPrice(roundedFinalPrice);
+        this.price = roundedFinalPrice;
         return roundedFinalPrice;
     }
 }
