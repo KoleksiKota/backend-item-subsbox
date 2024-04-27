@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Item implements Component {
-    private String itemId;
+    private String id;
     private String name;
     private String description;
     @Setter(AccessLevel.NONE)
