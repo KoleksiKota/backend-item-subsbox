@@ -11,9 +11,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class QuarterlyBoxTest {
+public class BoxTest {
     ArrayList<Item> items;
-    Box quarterlyBox;
+    Box box;
 
     @BeforeEach
     void setup() throws MalformedURLException {
@@ -43,14 +43,13 @@ public class QuarterlyBoxTest {
         item3.setPrice(60000);
         items.add(item3);
 
-        quarterlyBox = new QuarterlyBox();
-        quarterlyBox.setBoxId("62261af6-9161-41ae-935d-3057048d34be");
-        quarterlyBox.setName("Box Yogyakarta");
-        quarterlyBox
-                .setDescription("Berisi barang-barang terkini dari Yogyakarta! Dikirimkan setiap 3 bulan sekali");
-        quarterlyBox.setPicture(
+        box = new Box();
+        box.setId("7c59dda6-dec6-4694-8ed2-34d14db3c610");
+        box.setName("Box Yogyakarta");
+        box.setDescription("Berisi barang-barang terkini dari Yogyakarta!");
+        box.setPicture(
                 "https://terasmalioboro.jogjaprov.go.id/wp-content/uploads/2022/08/yogyakarta-monument.jpg");
-        quarterlyBox.setItems(items);
+        box.setItems(items);
     }
 
     @AfterEach
@@ -60,53 +59,55 @@ public class QuarterlyBoxTest {
 
     @Test
     void testCreateBox() {
-        assertEquals("62261af6-9161-41ae-935d-3057048d34be", quarterlyBox.getBoxId());
-        assertEquals("QTR - Box Yogyakarta", quarterlyBox.getName());
-        assertEquals("Berisi barang-barang terkini dari Yogyakarta! Dikirimkan setiap 3 bulan sekali",
-                quarterlyBox.getDescription());
+        assertEquals("7c59dda6-dec6-4694-8ed2-34d14db3c610", box.getId());
+        assertEquals("Box Yogyakarta", box.getName());
+        assertEquals("Berisi barang-barang terkini dari Yogyakarta!",
+                box.getDescription());
         assertEquals("https://terasmalioboro.jogjaprov.go.id/wp-content/uploads/2022/08/yogyakarta-monument.jpg",
-                quarterlyBox.getPicture().toString());
-        assertEquals((int) Math.floor(200000 * 1.10), quarterlyBox.calculatePrice());
-        assertArrayEquals(items.toArray(), quarterlyBox.getItems().toArray());
+                box.getPicture().toString());
+        assertEquals((int) Math.floor(200000), box.calculatePrice());
+        assertArrayEquals(items.toArray(), box.getItems().toArray());
     }
 
     @Test
     void testEditBox() throws MalformedURLException {
-        quarterlyBox.setName("Yogyakarta Box");
-        quarterlyBox.setPicture(
+        box.setName("Yogyakarta Box");
+        box.setDescription("Berisi barang-barang terbaru dari Yogyakarta!");
+        box.setPicture(
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkETzYWWefz9GC1oZA9y7VIgs9DN0v459r9n7BdNy4cA&s");
 
-        assertEquals("QTR - Yogyakarta Box", quarterlyBox.getName());
+        assertEquals("Yogyakarta Box", box.getName());
+        assertEquals("Berisi barang-barang terbaru dari Yogyakarta!",
+                box.getDescription());
         assertEquals(
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkETzYWWefz9GC1oZA9y7VIgs9DN0v459r9n7BdNy4cA&s",
-                quarterlyBox.getPicture().toString());
-        assertEquals((int) Math.floor(200000 * 1.10), quarterlyBox.calculatePrice());
+                box.getPicture().toString());
     }
 
     @Test
     void testCalculateNewPrice() throws MalformedURLException {
-        items.remove(0);
-        quarterlyBox.setItems(items);
-        assertEquals((int) Math.floor(100000 * 1.10), quarterlyBox.calculatePrice());
+        items.remove(2);
+        box.setItems(items);
+        assertEquals((int) Math.floor(140000), box.calculatePrice());
     }
 
     @Test
     void testCalculatePriceWithZeroItem() throws MalformedURLException {
         items.clear();
-        quarterlyBox.setItems(items);
-        assertEquals(0, quarterlyBox.calculatePrice());
+        box.setItems(items);
+        assertEquals(0, box.calculatePrice());
+    }
+
+    @Test
+    void testGetPictureFromURL() throws IOException {
+        InputStream pictureStream = box.getPicture().openStream();
+        assertNotNull(pictureStream);
     }
 
     @Test
     void testSetInvalidURL() {
         assertThrows(MalformedURLException.class, () -> {
-            quarterlyBox.setPicture("invalidURL");
+            box.setPicture("invalidURL");
         });
-    }
-
-    @Test
-    void testAccessPictureFromURL() throws IOException {
-        InputStream pictureStream = quarterlyBox.getPicture().openStream();
-        assertNotNull(pictureStream);
     }
 }

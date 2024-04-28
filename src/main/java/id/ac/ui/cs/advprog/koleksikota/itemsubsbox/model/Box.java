@@ -10,26 +10,29 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class Box implements Component {
-    protected String boxId;
+public class Box implements Component {
+    private String id;
+    private String name;
+    private String description;
+    @Setter(AccessLevel.NONE)
+    private URL picture;
+    private ArrayList<Item> items;
     @Getter(AccessLevel.NONE)
-    protected String name;
-    protected String description;
     @Setter(AccessLevel.NONE)
-    protected URL picture;
-    @Setter(AccessLevel.NONE)
-    protected ArrayList<Item> items;
-    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
-    protected Integer price;
-
-    public abstract String getName();
+    private Integer price;
 
     @SuppressWarnings("deprecation")
     public void setPicture(String url) throws MalformedURLException {
         this.picture = new URL(url);
     }
 
-    public abstract void setItems(ArrayList<Item> items);
+    public Integer calculatePrice() {
+        Integer totalPrice = 0;
+        for (Item item : items) {
+            totalPrice += item.calculatePrice();
+        }
 
-    public abstract Integer calculatePrice();
+        this.price = (int) Math.floor(totalPrice);
+        return this.price;
+    }
 }
