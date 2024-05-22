@@ -4,57 +4,63 @@ import id.ac.ui.cs.advprog.koleksikota.itemsubsbox.model.Item;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
 
 import id.ac.ui.cs.advprog.koleksikota.itemsubsbox.service.ItemServiceImpl;
 
 @RestController
 @RequestMapping("/item")
+@CrossOrigin
+@EnableAsync
 public class ItemController {
     @Autowired
     private ItemServiceImpl itemService;
 
+    @Async
     @PostMapping("/create")
-    public ResponseEntity<Item> createItem(@RequestBody Item item) {
+    public CompletableFuture<ResponseEntity<Item>> createItem(@RequestBody Item item) {
         Item createdItem = itemService.create(item);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
+        return CompletableFuture.completedFuture(ResponseEntity.status(HttpStatus.CREATED).body(createdItem));
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Item>> getAllItems() {
+    public CompletableFuture<ResponseEntity<List<Item>>> getAllItems() {
         List<Item> items = itemService.findAll();
-        return ResponseEntity.ok().body(items);
+        return CompletableFuture.completedFuture(ResponseEntity.ok().body(items));
     }
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<Item> getItemById(@PathVariable("itemId") String itemId) {
+    public CompletableFuture<ResponseEntity<Item>> getItemById(@PathVariable("itemId") String itemId) {
         try {
             Item item = itemService.findById(itemId);
-            return ResponseEntity.ok().body(item);
+            return CompletableFuture.completedFuture(ResponseEntity.ok().body(item));
 
         } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
+            return CompletableFuture.completedFuture(ResponseEntity.notFound().build());
         }
     }
 
     @PostMapping("/edit/{itemId}")
-    public ResponseEntity<Item> updateItem(@PathVariable("itemId") String itemId, @RequestBody Item updatedItem) {
+    public CompletableFuture<ResponseEntity<Item>> updateItem(@PathVariable("itemId") String itemId, @RequestBody Item updatedItem) {
         try {
             Item item = itemService.edit(itemId, updatedItem);
-            return ResponseEntity.ok().body(item);
+            return CompletableFuture.completedFuture(ResponseEntity.ok().body(item));
 
         } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
+            return CompletableFuture.completedFuture(ResponseEntity.notFound().build());
         }
     }
 
     @PostMapping("/delete/{itemId}")
-    public ResponseEntity<Void> deleteItemById(@PathVariable("itemId") String itemId) {
+    public CompletableFuture<ResponseEntity<Void>> deleteItemById(@PathVariable("itemId") String itemId) {
         itemService.deleteItemById(itemId);
-        return ResponseEntity.noContent().build();
+        return CompletableFuture.completedFuture(ResponseEntity.noContent().build());
     }
 }
