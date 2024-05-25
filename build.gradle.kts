@@ -2,7 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.2.4"
 	id("io.spring.dependency-management") version "1.1.4"
-  id("org.sonarqube") version "4.4.1.3373"
+    id("org.sonarqube") version "4.4.1.3373"
 	jacoco
 }
 
@@ -45,20 +45,37 @@ dependencies {
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
 }
 
-tasks.withType<Test>().configureEach {
-	useJUnitPlatform()
+tasks.register<Test>("unitTest") {
+    description = "Runs unit tests"
+    group = "verification"
+
+    filter{
+        excludeTestsMatching("*FunctionalTest")
+    }
+}
+
+tasks.register<Test>("functionalTest") {
+    description = "Runs unit tests"
+    group = "verification"
+
+    filter{
+        includeTestsMatching("*FunctionalTest")
+    }
+}
+
+tasks.withType<Test>().configureEach() {
+    useJUnitPlatform()
 }
 
 tasks.test {
-   finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+    useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
-
 tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-
+    dependsOn(tasks.test) // tests are required to run before generating the report
     reports {
         xml.required.set(true)
-        html.required.set(true)
-        html.outputLocation.set(layout.buildDirectory.dir("jacocoHTML"))
+        csv.required.set(true)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
     }
 }
