@@ -2,7 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.2.4"
 	id("io.spring.dependency-management") version "1.1.4"
-    id("org.sonarqube") version "4.4.1.3373"
+  id("org.sonarqube") version "4.4.1.3373"
 	jacoco
 }
 
@@ -45,12 +45,11 @@ dependencies {
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
 	useJUnitPlatform()
 }
 
 tasks.test {
-   useJUnitPlatform()
    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
 
@@ -58,7 +57,8 @@ tasks.jacocoTestReport {
     dependsOn(tasks.test)
 
     reports {
-        xml.required = true
-        html.required = true
+        xml.required.set(true)
+        html.required.set(true)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHTML"))
     }
 }
