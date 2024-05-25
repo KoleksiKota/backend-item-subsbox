@@ -40,3 +40,9 @@ jobs:
           JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
           JDBC_DATABASE_USERNAME: ${{ secrets.JDBC_DATABASE_USERNAME }}
         run: ./gradlew build sonar --info
+      - name: Run tests with coverage
+        run: ./gradlew test jacocoTestReport
+      - name: Run analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonar -Dsonar.projectKey=KoleksiKota_backend-item-subsbox -Dsonar.organization=koleksikota -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
