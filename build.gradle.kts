@@ -2,6 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.2.4"
 	id("io.spring.dependency-management") version "1.1.4"
+    id("org.sonarqube") version "4.4.1.3373"
 	jacoco
 }
 
@@ -10,6 +11,14 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	sourceCompatibility = JavaVersion.VERSION_21
+}
+
+sonar {
+  properties {
+    property("sonar.projectKey", "KoleksiKota_backend-item-subsbox")
+    property("sonar.organization", "koleksikota")
+    property("sonar.host.url", "https://sonarcloud.io")
+  }
 }
 
 configurations {
@@ -36,22 +45,37 @@ dependencies {
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+tasks.register<Test>("unitTest") {
+    description = "Runs unit tests"
+    group = "verification"
+
+    filter{
+        excludeTestsMatching("*FunctionalTest")
+    }
+}
+
+tasks.register<Test>("functionalTest") {
+    description = "Runs unit tests"
+    group = "verification"
+
+    filter{
+        includeTestsMatching("*FunctionalTest")
+    }
+}
+
+tasks.withType<Test>().configureEach() {
+    useJUnitPlatform()
 }
 
 tasks.test {
-   useJUnitPlatform()
-   finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+    useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
 tasks.jacocoTestReport {
-   classDirectories.setFrom(files(classDirectories.files.map {
-       fileTree(it) { exclude("**/*Application**") }
-   }))
-   dependsOn(tasks.test) // tests are required to run before generating the report
-   reports {
-       xml.required.set(false)
-       csv.required.set(false)
-       html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
-   }
+    dependsOn(tasks.test) // tests are required to run before generating the report
+    reports {
+        xml.required.set(true)
+        csv.required.set(true)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
 }
