@@ -17,7 +17,6 @@ import id.ac.ui.cs.advprog.koleksikota.itemsubsbox.service.ItemServiceImpl;
 
 @RestController
 @RequestMapping("/item")
-@CrossOrigin
 @EnableAsync
 public class ItemController {
     @Autowired
