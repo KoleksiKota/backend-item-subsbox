@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +20,6 @@ import id.ac.ui.cs.advprog.koleksikota.itemsubsbox.service.BoxServiceImpl;
 
 @RestController
 @RequestMapping("/box")
-@CrossOrigin
 @EnableAsync
 public class BoxController {
     @Autowired
